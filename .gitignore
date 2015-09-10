@@ -1,1 +1,7 @@
-.env.sh
+/.env.sh
+/php-dev/config/php.ini
+/php-dev/config/php-fpm.conf
+/php-dev/config/redis.conf
+/php-dev/config/my.cnf
+/php-dev/config/mongod.conf
+
