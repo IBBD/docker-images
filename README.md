@@ -44,3 +44,10 @@ cd php-dev
 sudo docker-compose up
 ```
 
+## 登陆运行中的容器
+
+```
+# 登陆nginx容器
+./docker-exec.sh nginx
+```
+
