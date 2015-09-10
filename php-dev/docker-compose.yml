@@ -1,0 +1,28 @@
+nginx:
+    image: ibbd/nginx
+    container_name: ibbd-dev-nginx
+    ports:
+        - "80:80"
+    links:
+        - "php-fpm"
+    volumes:
+        - /etc/nginx/sites-enabled:/etc/nginx/sites-enabled
+        - /var/log/nginx:/var/log/nginx 
+        - /home/code/ibbd:/var/www
+    volumes_from:
+        - "php-fpm"
+
+php-fpm:
+    image: ibbd/php-fpm
+    container_name: ibbd-php-fpm
+    external_links:
+        - ibbd-mariadb:mysql
+        - ibbd-redis:redis
+        - ibbd-mongo:mongo
+    ports:
+        - "9000:9000"
+    volumes:
+        - /home/code/ibbd:/var/www
+        - /var/log/php:/var/log/php
+
+
