@@ -13,6 +13,14 @@
 
 ## PHP开发环境构建
 
+```sh 
+cd php-dev
 
+# 下载所有相关镜像
+./docker-pull-all.sh
+
+# 构建环境
+sudo docker-compose up
+```
 
 
