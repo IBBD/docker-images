@@ -1,4 +1,7 @@
-# Docker images
+# 镜像使用说明
+
+- Dockerfile地址：https://github.com/IBBD
+- 镜像地址：https://hub.docker.com/u/ibbd/
 
 ## 安装docker
 
@@ -7,19 +10,30 @@
 
 ## 前端开发环境构建 
 
+- 从hub.docker.com pull镜像安装：（可能耗时比较久，需要耐心）
+
 ```sh
 ./install-env-node-dev.sh
 ```
 
+- `docker load`安装，需要先有打包好的镜像。
+
+
 ## PHP开发环境构建
+
+### STEP1：获取镜像
+
+```sh 
+# 从hub.docker.com下载所有相关镜像，可能耗时比较久，需要耐心
+./docker-pull-all.sh
+
+# 或者使用 docker load 命令直接加载镜像，需要先有打包好的镜像
+```
+
+### STEP2：构建环境
 
 ```sh 
 cd php-dev
-
-# 下载所有相关镜像
-./docker-pull-all.sh
-
-# 构建环境
 sudo docker-compose up
 ```
 
