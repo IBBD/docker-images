@@ -1,4 +1,5 @@
 /.env.sh
+/ext/*
 /php-dev/config/php.ini
 /php-dev/config/php-fpm.conf
 /php-dev/config/redis.conf
