@@ -17,6 +17,10 @@ Windows/Mac用户：
 
 ## 前端开发环境构建 
 
+### Node环境
+
+包含glup，sass，compass等，具体见：IBBD/dockerfile-node-dev 
+
 - 从hub.docker.com pull镜像安装：（可能耗时比较久，需要耐心）
 
 ```sh
@@ -25,6 +29,15 @@ Windows/Mac用户：
 
 - `docker load`安装，需要先有打包好的镜像。
 
+### Ruby环境（单独的SASS和Compass环境）
+
+- 从hub.docker.com pull镜像安装：（可能耗时比较久，需要耐心）
+
+```sh
+./install-env-ruby.sh
+```
+
+- `docker load`安装，需要先有打包好的镜像。
 
 ## PHP开发环境构建
 
