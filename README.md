@@ -4,6 +4,9 @@
 - 镜像地址：https://hub.docker.com/u/ibbd/
 - 镜像命名规则：`ibbd/$name`
 - 容器命名规则：`ibbd-$name` （与镜像对应）
+- 代码目录：`/var/www/`
+- 日志目录：`/var/log/`
+- 数据目录：`/data/`
 
 ## 安装docker
 
@@ -45,6 +48,7 @@ Windows/Mac用户：
 
 ```sh 
 # 从hub.docker.com下载所有相关镜像，可能耗时比较久，需要耐心
+cd ./php-dev/
 ./docker-pull-all.sh
 
 # 或者使用 docker load 命令直接加载镜像，需要先有打包好的镜像
@@ -57,10 +61,24 @@ cd php-dev
 sudo docker-compose up
 ```
 
-## 登陆运行中的容器
+## 容器的基本操作
 
 ```
 # 登陆nginx容器
 ./docker-exec.sh nginx
+
+# 查看容器的日志
+sudo docker logs ibbd-nginx 
 ```
+
+## 爬虫线上环境
+
+部署到正式环境使用
+
+
+## 爬虫开发环境
+
+在线上环境的基础上，增加开发测试时的一些基本工具，主要是vim等。
+
+
 

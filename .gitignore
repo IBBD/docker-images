@@ -6,3 +6,5 @@
 /php-dev/config/my.cnf
 /php-dev/config/mongod.conf
 
+/php-production/config/php.ini
+/php-production/config/php-fpm.conf
