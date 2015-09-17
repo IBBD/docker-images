@@ -18,6 +18,12 @@ Windows/Mac用户：
 如果官网下载太慢，可以从这里下载： https://get.daocloud.io/toolbox/ 
 ```
 
+## 基础开发环境
+
+包含了git, vim（含spf13-vim），zsh（含oh-my-zsh）, tmux, mycli等工具。可以用于日常的开发工作。需要具体的运行环境则需要执行具体的镜像（例如ibbd/nginx镜像等），通过/var/www代码目录进行共享。
+
+- 镜像地址：https://hub.docker.com/r/ibbd/base-dev-tools/ 
+
 ## 前端开发环境构建 
 
 ### Node环境
