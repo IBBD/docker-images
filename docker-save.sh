@@ -6,6 +6,12 @@
 # ./docker-save.sh node-dev
 #
 
+if [ 1 -ne $# ]
+then 
+    echo 'ERROR: the name of image is empty!'
+    exit 1
+fi
+
 # 存储目录
 save_path=/var/www/docker-images/$1
 if [ ! -d $save_path ]
