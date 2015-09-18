@@ -8,3 +8,5 @@
 
 /php-production/config/php.ini
 /php-production/config/php-fpm.conf
+
+/php-dev/docker-compose.yml
