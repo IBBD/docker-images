@@ -8,6 +8,15 @@
 - 日志目录：`/var/log/`
 - 数据目录：`/data/`
 
+## 总体理念
+
+本地开发环境和测试环境使用了不同的镜像。以php开发为例，说明整体开发工作流：
+
+1. 在宿主机器上，代码都统一放到一个代码目录下，例如：`/var/www`
+2. 开发的时候使用`基础开发环境镜像`，宿主机的代码目录映射到开发容器中的`/var/www`
+3. 需要测试的时候，启动`PHP开发环境`（从`docker-compose`启动，一次性启动nginx，php-fpm，mariadb，redis，mongoDB，当然也可以根据自己定义的配置启动）注意：nginx的配置文件目录
+
+
 ## 安装docker
 
 - Linux用户：`./install-docker.sh`
