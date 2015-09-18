@@ -5,6 +5,7 @@
 #
 
 # 官方的经常出现网络问题
+# 使用daocloud的服务：http://get.daocloud.io/#install-docker
 #wget -qO- https://get.docker.com/gpg | sudo apt-key add -
 #wget -qO- https://get.docker.com/ | sh
 curl -sSL https://get.daocloud.io/docker | sh
@@ -16,8 +17,12 @@ sudo apt-get install python-pip
 sudo service docker start
 
 # docker-compose
-sudo pip install -U docker-compose
+#sudo pip install -U docker-compose -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+filename=__install-docker-compose
+curl -L get.daocloud.io/docker/compose/releases/download/1.4.0/docker-compose-`uname -s`-`uname -m` -o $filename
+sudo mv $filename /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose 
+rm $filename
 
 # 查看docker版本号等
 sudo docker -v
