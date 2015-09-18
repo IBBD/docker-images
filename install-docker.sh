@@ -4,8 +4,10 @@
 # docker, docker-compose
 #
 
-wget -qO- https://get.docker.com/gpg | sudo apt-key add -
-wget -qO- https://get.docker.com/ | sh
+# 官方的经常出现网络问题
+#wget -qO- https://get.docker.com/gpg | sudo apt-key add -
+#wget -qO- https://get.docker.com/ | sh
+curl -sSL https://get.daocloud.io/docker | sh
 
 # install pip
 sudo apt-get install python-pip
