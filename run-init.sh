@@ -7,6 +7,7 @@ docker_bashrc_file="run-bashrc.sh"
 if [ ! -f $docker_bashrc_file ]
 then
     echo "ERROR: $docker_bashrc_file is not existed!"
+    echo "You can copy $docker_bashrc_file from $docker_bashrc_file"".example"
     exit 1
 fi
 

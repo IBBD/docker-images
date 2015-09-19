@@ -16,7 +16,6 @@
 2. 开发的时候使用`基础开发环境镜像`，宿主机的代码目录映射到开发容器中的`/var/www`
 3. 需要测试的时候，启动`PHP开发环境`（从`docker-compose`启动，一次性启动nginx，php-fpm，mariadb，redis，mongoDB，当然也可以根据自己定义的配置启动）注意：nginx的配置文件目录
 
-
 ## 安装docker
 
 - Linux用户：`./install-docker.sh`
@@ -25,6 +24,24 @@
 ```
 Windows/Mac用户：
 如果官网下载太慢，可以从这里下载： https://get.daocloud.io/toolbox/ 
+```
+
+## Linux下启动环境的快捷命令配置
+
+```
+# 运行初始化脚本
+./run-init.sh
+
+# 重启终端，即可拥有命令：ibbd_docker_run 
+
+# 启动基础开发环境
+ibbd_docker_run dev 
+
+# 启动nodejs前端开发环境 
+ibbd_docker_run node 
+
+# 启动php环境 
+ibbd_docker_run php
 ```
 
 ## 基础开发环境
