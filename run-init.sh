@@ -13,7 +13,8 @@ fi
 # 判断run_bashrc.sh的路径是否正确
 s="ibbd_docker_run_root="
 s_len=${#s}
-current_pwd=$(grep -Ei '^'$s ./$docker_bashrc_file)
+current_pwd=$(grep -Ei '^\s*'$s ./$docker_bashrc_file)
+current_pwd=$(echo $current_pwd|sed 's/^\s*//')
 current_pwd=${current_pwd:$s_len}
 echo $current_pwd
 
@@ -25,12 +26,22 @@ fi
 
 # 判断是否已经加入了~/.bashrc
 if 
-    grep $current_pwd"/"$docker_bashrc_file ~/.bashrc 
+    grep $current_pwd/$docker_bashrc_file ~/.bashrc > /tmp/null
 then
+    echo "$current_pwd/$docker_bashrc_file is in .bashrc"
+else 
     echo '# ibbd docker command'  >> ~/.bashrc
     echo '. '$current_pwd'/'$docker_bashrc_file >> ~/.bashrc
-    echo "$docker_bashrc_file had added to .bashrc"
-else 
-    echo "$docker_bashrc_file is in .bashrc"
+    echo "$current_pwd/$docker_bashrc_file had added to .bashrc"
+
+    if [ -f ~/.zshrc ]
+    then
+        # 使用zsh
+        echo '# ibbd docker command'  >> ~/.zshrc
+        echo '. '$current_pwd'/'$docker_bashrc_file >> ~/.zshrc
+        echo "$current_pwd/$docker_bashrc_file had added to .zshrc"
+    fi
 fi
 
+# 执行成功
+echo 'SUCCESS!'
