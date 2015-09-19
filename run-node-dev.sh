@@ -21,9 +21,6 @@ logs_path=/var/log/node
 # ----- 配置目录  END --------------
 #-----------------------------------
 
-#docker stop ibbd-$name 
-#docker rm ibbd-$name 
-
 sudo docker run -it --rm --name ibbd-$name \
     -v $code_path:/var/www \
     -v $logs_path:/var/log/node \
