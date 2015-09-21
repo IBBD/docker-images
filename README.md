@@ -40,8 +40,15 @@ ibbd_docker_run dev
 # 启动nodejs前端开发环境 
 ibbd_docker_run node 
 
+##########################
+## PHP环境如下 ###########
+##########################
+
 # 启动php环境 
 ibbd_docker_run php
+
+# 停止php环境 
+ibbd_docker_run php stop
 ```
 
 ## 基础开发环境
