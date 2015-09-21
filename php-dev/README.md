@@ -15,9 +15,10 @@
 复制配置文件也可以使用快捷脚本：
 
 ```sh 
-./yml-cp.sh       # 完整环境
-./yml-cp.sh  npm  # 完整环境
-./yml-cp.sh  np   # 完整环境
+./yml-cp.sh       # 完整环境，含：nginx, php-fpm, mariadb(mysql), redis, mongodb
+./yml-cp.sh  npm  # nginx, php-fpm, mariadb(mysql)环境
+./yml-cp.sh  np   # nginx, php-fpm环境
+./yml-cp.sh  n    # 只是启动单独的nginx环境
 ```
 
 
