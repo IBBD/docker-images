@@ -1,12 +1,11 @@
 #!/bin/bash
 
-# 运行环境初始化
+# 运行环境初始化。初始化之后会在当前.bashrc or .zshrc文件中引入./run-bashrc.sh文件，从而获得ibbd_docker_run命令
+#
 # @author cyy0523xc@gmail.com
 # Usage: ./run-init.sh
 # 
-
-# 注意：配置目录
-ibbd_docker_run_root=ibbd_docker_run_root
+# 注意：需要先配置ibbd_docker_run_root变量
 
 
 # 启动docker容器
@@ -14,6 +13,13 @@ ibbd_docker_run_root=ibbd_docker_run_root
 # @param string 类型：dev|node|php
 # @return 
 ibbd_docker_run() {
+
+    #########################################################
+    # 注意：配置目录
+    # 最后不要加/
+    ibbd_docker_run_root=/home/code/ibbd/dockerfile/docker-images
+    #########################################################
+
     back_pwd=$PWD
     cd $ibbd_docker_run_root
     echo $ibbd_docker_run_root
@@ -54,6 +60,4 @@ ibbd_docker_run() {
     # 返回原来的目录
     cd $back_pwd
 }
-
-
 
