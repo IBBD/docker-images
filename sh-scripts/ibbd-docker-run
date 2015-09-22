@@ -1,0 +1,154 @@
+#!/bin/bash
+#
+# 为系统提供命令：ibbd-docker-run
+#
+# @author cyy0523xc@gmail.com
+# Usage: ibbd-docker-run
+#        ibbd-docker-run dev
+#        ibbd-docker-run node
+#        ibbd-docker-run php
+#        ibbd-docker-run php stop
+# 
+# 注意：使用之前先将该文件复制到/usr/local/bin
+#
+# @author cyy0523xc@gmail.com
+# @date   2015-09-22
+#
+
+#########################################################
+# 注意：配置目录
+# 最后不要加/
+# docker-Compass编排容器的时候需要用到
+ibbd_docker_run_root=/home/code/ibbd/dockerfile/docker-images
+
+# 代码目录
+code_path=/var/www
+
+# 日志目录
+logs_path=/var/log
+#########################################################
+
+set -e
+cd $ibbd_docker_run_root
+
+usage() {
+    name=$0
+    name=${name##*/}
+    echo "usage: $name dev|node|php|mysql-cli|php-cli|nginx-cli|mongo-cli|redis-cli [start|stop|restart]"
+    echo "   ie: $name dev"
+    echo "       $name node"
+    echo "       $name php"
+    echo "       $name php stop"
+    echo 
+    echo '说明：'
+    echo '- cli后缀的是进入对应的命令行界面, 不带后缀的是进入一个环境'
+    echo '- dev: 是进入一个本地开发环境，包含vim，tmux，git等基本的开发工具'
+    echo '- node: 进入本地的node开发环境，除了nodejs外，还包含ruby2.3，python2.7，Gulp，SASS，Compass等基本工具'
+    echo '- php：php的运行环境。后面可以跟start，stop，restart等参数'
+
+    exit 1
+}
+
+# 启动开发环境，允许启动时指定命令
+# @param string 容器启动时执行的命令，默认为tmux
+run_dev() {
+    # 可以直接启动指定的命令
+    ibbd_command=tmux 
+    if [ 1 -eq $# ]
+    then
+        ibbd_command=$*
+    fi
+
+    #echo $ibbd_command
+    name=base-dev-tools
+    sudo docker run -ti --rm --name=ibbd-$name \
+        -v /var/www:/var/www \
+        -w /var/www \
+        ibbd/$name \
+        $ibbd_command
+}
+
+# 启动nodejs本地开发环境
+run_node() {
+    name=node
+    sudo docker run -it --rm --name ibbd-$name \
+        -v $code_path:/var/www \
+        -v $logs_path/node:/var/log/node \
+        ibbd/$name \
+        /bin/bash
+}
+
+# 进入容器
+# @param string 容器名
+exec_cli() {
+    sudo docker exec -ti ibbd-$1 /bin/bash
+}
+
+# 启动PHP环境
+# @param string 动作类型：start（默认），stop，restart
+run_php() {
+    # 先确定./php-dev/docker-compose.yml文件是否存在
+    cd $ibbd_docker_run_root/php-dev/
+    dc_filename=docker-compose.yml
+    if [ ! -f $dc_filename ]
+    then
+        echo "ERROR: $dc_filename is not existed!"
+        exit 1
+    else
+        if [ $action = start ]
+        then
+            # 启动PHP环境
+            sudo docker-compose up -d
+        elif [ $action = stop ] 
+        then
+            # 停止PHP环境
+            sudo docker-compose stop
+        elif [ $action = restart ] 
+        then
+            # 重启PHP环境
+            ibbd_docker_run php stop
+            ibbd_docker_run php start
+        else
+            echo 'ERROR: supported for start|stop|restart'
+            exit 1
+        fi
+    fi
+} 
+# end of run_php 
+
+if [ 0 -eq $# ]
+then
+    usage 
+fi
+
+case $1 in
+    "dev")
+        run_dev 
+        ;;
+    "mysql-cli")
+        run_dev 'mycli -h ibbd-mariadb -u root -p 111111'
+        ;;
+    "php-cli"|"redis-cli"|"nginx-cli"|"mongo-cli")
+        # 进入对应容器的命令行
+        name=$1
+        name=${name%-*}
+        [ 'php' = $name ] && name=php-fpm
+        exec_cli $name
+        ;;
+    "php")
+        # 初始化动作类型
+        if [ 1 -eq $# ]
+        then
+            action=start
+        else
+            action=$2
+        fi
+        run_php $action
+        ;;
+    *)
+        echo 'ERROR'
+        echo 
+        usage 
+        ;;
+esac
+
