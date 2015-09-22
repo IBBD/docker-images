@@ -30,25 +30,29 @@ Windows/Mac用户：
 
 ```
 # 运行初始化脚本
+cd sh-scripts
 ./run-init.sh
 
-# 重启终端，即可拥有命令：ibbd_docker_run 
+# 重启终端，即可拥有命令：ibbd-docker-run 
 
 # 启动基础开发环境
-ibbd_docker_run dev 
+ibbd-docker-run dev 
 
 # 启动nodejs前端开发环境 
-ibbd_docker_run node 
+ibbd-docker-run node 
 
 ##########################
 ## PHP环境如下 ###########
 ##########################
 
 # 启动php环境 
-ibbd_docker_run php
+ibbd-docker-run php
 
 # 停止php环境 
-ibbd_docker_run php stop
+ibbd-docker-run php stop
+
+# 重启php环境 
+ibbd-docker-run php restart
 ```
 
 ## 基础开发环境
@@ -93,18 +97,17 @@ cd ./php-dev/
 # 或者使用 docker load 命令直接加载镜像，需要先有打包好的镜像
 ```
 
-### STEP2：构建环境
+### STEP2：启动
 
 ```sh 
-cd php-dev
-sudo docker-compose up
+ibbd-docker-run php
 ```
 
 ## 容器的基本操作
 
 ```
 # 登陆nginx容器
-./docker-exec.sh nginx
+ibbd-docker-run nginx-cli
 
 # 查看容器的日志
 sudo docker logs ibbd-nginx 

@@ -10,5 +10,5 @@
 /php-production/config/php-fpm.conf
 
 /php-dev/docker-compose.yml
-/run-bashrc.sh
+/sh-scripts/ibbd-docker-run
 
