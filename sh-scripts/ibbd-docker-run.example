@@ -106,8 +106,8 @@ run_php() {
         elif [ $action = restart ] 
         then
             # 重启PHP环境
-            ibbd_docker_run php stop
-            ibbd_docker_run php start
+            ibbd-docker-run php stop
+            ibbd-docker-run php start
         else
             echo 'ERROR: supported for start|stop|restart'
             exit 1

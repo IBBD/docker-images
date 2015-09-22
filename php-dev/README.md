@@ -12,6 +12,8 @@
 
 将对应的example文件cp一份到`docker-compose.yml`, 然后运行`docker-compose up`即可。
 
+说明：`common.yml`是公共的配置模版，可以直接引用
+
 复制配置文件也可以使用快捷脚本：
 
 ```sh 
