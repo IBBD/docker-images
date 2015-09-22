@@ -5,12 +5,15 @@
 # @author cyy0523xc@gmail.com
 # Usage: ./run-init.sh
 # 
-# 注意：需要先配置ibbd_docker_run_root变量
+# 注意：需要先配置ibbd_docker_run_root变量, 在ibbd_docker_run函数内
 
 
 # 启动docker容器
 # 
-# @param string 类型：dev|node|php
+# ibbd_docker_run dev|php|node|mysql-cli|php-cli|nginx-cli|redis-cli|mongo-cli [start|stop]
+# 
+# @param string 环境类型：dev|node|php|mysql-cli|php-cli|nginx-cli|redis-cli|mongo-cli
+# @param string 动作类型：start（默认），stop, restart
 # @return 
 ibbd_docker_run() {
 
@@ -22,9 +25,9 @@ ibbd_docker_run() {
 
     back_pwd=$PWD
     cd $ibbd_docker_run_root
-    echo $ibbd_docker_run_root
+    #echo $ibbd_docker_run_root
 
-    if [ 1 -eq $# ]
+    if [ 0 -lt $# ]
     then
         case $1 in 
             "dev")
@@ -35,26 +38,76 @@ ibbd_docker_run() {
                 # 启动前端开发环境
                 ./run-node-dev.sh
                 ;;
+            "mysql-cli")
+                # 进入mysql命令行 （在dev容器中）
+                ./run-mysql-client.sh
+                ;;
+            "php-cli"|"redis-cli"|"nginx-cli"|"mongo-cli")
+                # 进入对应容器的命令行
+                name=$1
+                name=${name%-*}
+                [ 'php' = $name ] && name=php-fpm
+                # 进入对应的容器
+                sudo docker exec -ti ibbd-$name /bin/bash
+                ;;
             "php")
                 # 启动php开发环境
                 # 先确定./php-dev/docker-compose.yml文件是否存在
+                 
+                # 初始化动作类型
+                if [ 1 -eq $# ]
+                then
+                    action=start
+                else
+                    action=$2
+                fi
+
                 cd ./php-dev/
                 dc_filename=docker-compose.yml
                 if [ ! -f $dc_filename ]
                 then
                     echo "ERROR: $dc_filename is not existed!"
                 else
-                    sudo docker-compose up -d
+                    if [ $action = start ]
+                    then
+                        # 启动PHP环境
+                        sudo docker-compose up -d
+                    elif [ $action = stop ] 
+                    then
+                        # 停止PHP环境
+                        sudo docker-compose stop
+                    elif [ $action = restart ] 
+                    then
+                        # 重启PHP环境
+                        ibbd_docker_run php stop
+                        ibbd_docker_run php start
+                    else
+                        echo 'ERROR: supported for start|stop'
+                        exit 1
+                    fi
                 fi
                 ;;
             *)
                 echo 'ERROR'
-                echo 'ibbd-docker-run dev|node|php'
+                echo 'ibbd-docker-run dev|node|php|mysql-cli|php-cli|nginx-cli|mongo-cli|redis-cli [start|stop|restart]'
+                echo ""
+                echo '说明：'
+                echo '- cli后缀的是进入对应的命令行界面, 不带后缀的是进入一个环境'
+                echo '- dev: 是进入一个本地开发环境，包含vim，tmux，git等基本的开发工具'
+                echo '- node: 进入本地的node开发环境，除了nodejs外，还包含ruby2.3，python2.7，Gulp，SASS，Compass等基本工具'
+                echo '- php：php的运行环境。后面可以跟start，stop，restart等参数'
                 ;;
         esac
     else
         echo 'ERROR'
-        echo 'ibbd-docker-run dev|node|php'
+        echo 'ibbd-docker-run dev|node|php|mysql-cli|php-cli|nginx-cli|mongo-cli|redis-cli [start|stop|restart]'
+        echo ""
+        echo '说明：'
+        echo '- cli后缀的是进入对应的命令行界面, 不带后缀的是进入一个环境'
+        echo '- dev: 是进入一个本地开发环境，包含vim，tmux，git等基本的开发工具'
+        echo '- node: 进入本地的node开发环境，除了nodejs外，还包含ruby2.3，python2.7，Gulp，SASS，Compass等基本工具'
+        echo '- php：php的运行环境。后面可以跟start，stop，restart等参数'
+        #echo '- '
     fi
 
     # 返回原来的目录
