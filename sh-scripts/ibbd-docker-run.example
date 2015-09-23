@@ -59,10 +59,12 @@ run_dev() {
         ibbd_command=$*
     fi
 
-    #echo $ibbd_command
+    # 把本地的.ssh映射到镜像里，只读
+    # 使用git的时候，需要在外部生成ssh key
     name=base-dev-tools
     sudo docker run -ti --rm --name=ibbd-$name \
         -v /var/www:/var/www \
+        -v ~/.ssh:/root/.ssh:ro \
         -w /var/www \
         ibbd/$name \
         $ibbd_command
