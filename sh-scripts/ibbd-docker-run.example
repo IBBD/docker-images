@@ -98,7 +98,7 @@ run_php() {
         if [ $action = start ]
         then
             # 启动PHP环境
-            sudo docker-compose up -d
+            sudo docker-compose up -d --no-recreate --no-build
         elif [ $action = stop ] 
         then
             # 停止PHP环境
