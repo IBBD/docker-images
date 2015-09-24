@@ -158,6 +158,7 @@ case $1 in
                 ;;
             'ruby')
                 exec_cmd=irb
+                ;;
             *)
                 exec_cmd=$name
                 ;;
