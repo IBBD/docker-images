@@ -28,7 +28,7 @@ sudo chown -Rh $user:$user /data
 sudo mkdir /etc/nginx
 
 # install
-sudo install -y curl \
+sudo apt-get install -y curl \
     guake gnome-do terminator \
     git git-flow gitk \
     tmux \
