@@ -19,13 +19,19 @@
 user=$(whoami)
 
 # 配置目录
-sudo mkdir -p /var/www 
-sudo chown -Rh $user:$user /var/www
+if [ ! -d /var/www ]
+then
+    sudo mkdir -p /var/www \
+        && sudo chown -Rh $user:$user /var/www
+fi
 
-sudo mkdir /data
-sudo chown -Rh $user:$user /data
+if [ ! -d /data ]
+then
+    sudo mkdir /data \
+        && sudo chown -Rh $user:$user /data
+fi
 
-sudo mkdir /etc/nginx
+[ ! -d /etc/nginx ] && sudo mkdir /etc/nginx
 
 # install
 sudo apt-get install -y curl \

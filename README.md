@@ -13,8 +13,8 @@
 本地开发环境和测试环境使用了不同的镜像。以php开发为例，说明整体开发工作流：
 
 1. 在宿主机器上，代码都统一放到一个代码目录下，例如：`/var/www`
-2. 开发的时候使用`基础开发环境镜像`，宿主机的代码目录映射到开发容器中的`/var/www`
-3. 需要测试的时候，启动`PHP开发环境`（从`docker-compose`启动，一次性启动nginx，php-fpm，mariadb，redis，mongoDB，当然也可以根据自己定义的配置启动）注意：nginx的配置文件目录
+2. 需要测试的时候，启动`PHP开发环境`（从`docker-compose`启动，一次性启动nginx，php-fpm，mariadb，redis，mongoDB，当然也可以根据自己定义的配置启动）注意：nginx的配置文件目录
+3. 尽量不要在容器内编辑文件，可能会产生各种权限问题。编辑代码应该在宿主机器上进行，如果需要配置基础的编程环境，可以直接运行`cd ./sh-scripts/; ./ubuntu-coding-env-install.sh`, 这个脚本会自动配置好git，vim，zsh等环境，并安装好相应的软件。
 
 ## 安装docker
 
@@ -35,9 +35,6 @@ cd sh-scripts
 
 # 重启终端，即可拥有命令：ibbd-docker-run 
 
-# 启动基础开发环境
-ibbd-docker-run dev 
-
 # 启动nodejs前端开发环境 
 ibbd-docker-run node 
 
@@ -56,6 +53,8 @@ ibbd-docker-run php restart
 ```
 
 ## 基础开发环境
+
+注意：这个暂时不建议使用
 
 包含了git, vim（含spf13-vim），zsh（含oh-my-zsh）, tmux, mycli等工具。可以用于日常的开发工作。需要具体的运行环境则需要执行具体的镜像（例如ibbd/nginx镜像等），通过/var/www代码目录进行共享。
 
@@ -113,14 +112,6 @@ ibbd-docker-run nginx-cli
 sudo docker logs ibbd-nginx 
 ```
 
-## 爬虫线上环境
-
-部署到正式环境使用
-
-
-## 爬虫开发环境
-
-在线上环境的基础上，增加开发测试时的一些基本工具，主要是vim等。
 
 
 
