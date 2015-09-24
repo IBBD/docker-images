@@ -153,11 +153,11 @@ case $1 in
         name=$1
         name=${name%-*}
         case $name in 
-            'scrapy')
-                exec_cmd=python
-                ;;
             'ruby')
                 exec_cmd=irb
+                ;;
+            'python2'|'python3'|'scrapy')
+                exec_cmd=ipython
                 ;;
             *)
                 exec_cmd=$name
