@@ -43,7 +43,7 @@ git config --global push.default simple
 
 # config zsh 
 # @see http://ohmyz.sh/
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
 
 # config vim 
 # @see http://vim.spf13.com/
