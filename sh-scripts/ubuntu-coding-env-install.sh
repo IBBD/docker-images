@@ -20,10 +20,10 @@ user=$(whoami)
 
 # 配置目录
 sudo mkdir -p /var/www 
-sduo chown -Rh $user:$user /var/www
+sudo chown -Rh $user:$user /var/www
 
 sudo mkdir /data
-sduo chown -Rh $user:$user /data
+sudo chown -Rh $user:$user /data
 
 sudo mkdir /etc/nginx
 
