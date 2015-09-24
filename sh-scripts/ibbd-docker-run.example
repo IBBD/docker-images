@@ -3,7 +3,7 @@
 # 为系统提供命令：ibbd-docker-run
 #
 # @author cyy0523xc@gmail.com
-# Usage: ibbd-docker-run
+# Usage: ibbd-docker-run help
 #        ibbd-docker-run dev
 #        ibbd-docker-run node
 #        ibbd-docker-run php
@@ -34,7 +34,9 @@ cd $ibbd_docker_run_root
 usage() {
     name=$0
     name=${name##*/}
-    echo "usage: $name dev|node|php|mysql-cli|php-cli|php-bash|nginx-cli|mongo-cli|redis-cli [start|stop|restart]"
+    echo "usage: $name node|php|mysql-cli|php-cli|php-bash|nginx-cli|mongo-cli|redis-cli [start|stop|restart]"
+    echo "usage: $name python2-cli|python2-bash|python3-cli|python3-bash|scrapy-bash|scrapy-cli"
+    echo "usage: $name ruby-cli|ruby-bash"
     echo "   ie: $name dev"
     echo "       $name node"
     echo "       $name php"
@@ -43,10 +45,13 @@ usage() {
     echo '说明：'
     echo 
     echo '- cli后缀的是进入对应的命令行界面，通常是进入交互模式, 不带后缀的是进入一个环境'
+    echo '- bash后缀：进入交互界面，例如php的命令行界面，就是/bin/bash'
     echo '- dev: 进入一个本地开发环境，包含vim，tmux，git等基本的开发工具'
     echo '- node: 进入本地的node开发环境，除了nodejs外，还包含ruby2.3，python2.7，Gulp，SASS，Compass等基本工具'
     echo '- php：php的运行环境。后面可以跟start，stop，restart等参数'
     echo '- php-bash: 进入php的命令行。对比php-cli是进入php的交互模式'
+    echo '- python2-cli: 进入python2的交互模式'
+    echo '- scrapy-bash: 进入爬虫的命令行界面'
     echo '注意：虽然dev容器可以允许在容器内部编辑代码，不过还有比较多的问题没解决。所以尽量不要在容器内部使用编辑工具'
 
     exit 1
@@ -139,6 +144,26 @@ case $1 in
     "php-bash")
         exec_cli php-fpm /bin/bash
         ;;
+    'scrapy-bash'|'python2-bash'|'python3-bash'|'ruby-bash')
+        name=$1
+        name=${name%-*}
+        sudo docker run -ti --rm ibbd/$name /bin/bash 
+        ;;
+    'python2-cli'|'python3-cli'|'scrapy-cli'|'ruby-cli')
+        name=$1
+        name=${name%-*}
+        case $name in 
+            'scrapy')
+                exec_cmd=python
+                ;;
+            'ruby')
+                exec_cmd=irb
+            *)
+                exec_cmd=$name
+                ;;
+        esac
+        sudo docker run -ti --rm ibbd/$name $exec_cmd
+        ;;
     "php-cli"|"mysql-cli"|"redis-cli"|"nginx-cli"|"mongo-cli")
         # 进入对应容器的命令行
         name=$1
@@ -161,6 +186,9 @@ case $1 in
                 ;;
             'redis')
                 exec_cmd='redis-cli'
+                ;;
+            *)
+                exec_cmd='/bin/bash'
                 ;;
         esac
 
