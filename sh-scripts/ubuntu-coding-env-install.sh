@@ -41,17 +41,43 @@ git config --global user.email $user'@ibbd.net'
 git config --global user.name  "$user"
 git config --global push.default simple
 
-# config zsh 
-# @see http://ohmyz.sh/
-sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
-
 # config vim 
 # @see http://vim.spf13.com/
-curl http://j.mp/spf13-vim3 -L -o - | sh
+spf13_vim_install=
+if [ ! -f spf13-vim-install.lock ]
+then
+    curl http://j.mp/spf13-vim3 -L -o - | sh \
+        && touch spf13-vim-install.lock \
+        && spf13_vim_install=ok
+fi
+if [ ok = $spf13_vim_install ]
+then
+    echo '===> [SUCCESS]spf13-vim install'
+else
+    echo '===> [ERROR]spf13-vim install'
+fi
 
+# config zsh 
+# @see http://ohmyz.sh/
+oh_my_zsh_install=
+if [ ! -f oh-my-zsh-install.lock ]
+then
+    sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)" \
+        && touch oh-my-zsh-install.lock \
+        && oh_my_zsh_install=ok
+fi
+if [ ok = $oh_my_zsh_install ]
+then
+    echo '===> [SUCCESS]oh-my-zsh install'
+else
+    echo '===> [ERROR]oh-my-zsh install'
+fi
 
-echo 
-echo "==========================="
-echo "===> Ubuntu coding env install is ok!"
-echo 
+if [ ok = $spf13_vim_install -a ok = $oh_my_zsh_install ]
+then
+    echo 
+    echo "==========================="
+    echo "===> Ubuntu coding env install is ok!"
+    echo 
+fi
 
