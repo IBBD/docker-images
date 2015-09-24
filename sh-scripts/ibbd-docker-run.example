@@ -108,7 +108,8 @@ run_php() {
         if [ $action = start ]
         then
             # 启动PHP环境
-            sudo docker-compose up -d --no-recreate --no-build
+            # --no-recreate 加上这个的话，改变配置文件启动可能会出问题，link改变了
+            sudo docker-compose up -d --no-build
         elif [ $action = stop ] 
         then
             # 停止PHP环境
@@ -150,7 +151,7 @@ case $1 in
                 ;;
             'mysql')
                 exec_cmd='mycli -h ibbd-mariadb -u root -p 111111'
-                exec_cmd='/bin/bash'
+                #exec_cmd='/bin/bash'
                 ;;
             'mongo')
                 exec_cmd='mongo'
