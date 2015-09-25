@@ -42,6 +42,9 @@ sudo apt-get install -y curl \
     zsh \
     pinta
 
+# install docker 
+source install-docker.sh
+
 # config git
 git config --global user.email $user'@ibbd.net'
 git config --global user.name  "$user"
