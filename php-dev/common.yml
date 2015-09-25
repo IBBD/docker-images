@@ -24,6 +24,7 @@ php-fpm:
     volumes:
         - ./config/php.ini:/usr/local/etc/php/php.ini:ro 
         - ./config/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro 
+    working_dir: /var/www
 
 mysql:
     image: ibbd/mariadb
