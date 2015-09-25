@@ -83,7 +83,7 @@ run_dev() {
 
 # 启动nodejs本地开发环境
 run_node() {
-    name=node
+    name=node-dev
     sudo docker run -it --rm --name ibbd-$name \
         -v $code_path:/var/www \
         -v $logs_path/node:/var/log/node \
