@@ -1,5 +1,7 @@
 /.env.sh
 /tmp/*
+*.lock
+
 /php-dev/config/php.ini
 /php-dev/config/php-fpm.conf
 /php-dev/config/redis.conf
@@ -11,4 +13,6 @@
 
 /php-dev/docker-compose.yml
 /sh-scripts/ibbd-docker-run
+
+
 

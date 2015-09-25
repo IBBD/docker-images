@@ -65,21 +65,18 @@ fi
 
 # config zsh 
 # @see http://ohmyz.sh/
-oh_my_zsh_install=
-if [ ! -f oh-my-zsh-install.lock ]
+if [ /usr/bin/zsh != $SHELL -o oh-my-zsh != ${ZSH#*.} ]
 then
-    sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)" \
-        && touch oh-my-zsh-install.lock \
-        && oh_my_zsh_install=ok
+    sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)" 
 fi
-if [ ok = $oh_my_zsh_install ]
+if [ oh-my-zsh = ${ZSH#*.} ]
 then
     echo '===> [SUCCESS]oh-my-zsh install'
 else
     echo '===> [ERROR]oh-my-zsh install'
 fi
 
-if [ ok = $spf13_vim_install -a ok = $oh_my_zsh_install ]
+if [ ok = $spf13_vim_install -a oh-my-zsh = ${ZSH#*.} ]
 then
     echo 
     echo "==========================="
