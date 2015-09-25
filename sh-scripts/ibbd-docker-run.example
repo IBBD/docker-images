@@ -141,6 +141,9 @@ case $1 in
     "dev")
         run_dev 
         ;;
+    'node')
+        run_node
+        ;;
     "php-bash")
         exec_cli php-fpm /bin/bash
         ;;
