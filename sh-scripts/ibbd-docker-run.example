@@ -35,12 +35,18 @@ image_download_path=/data/image-download
 set -e
 cd $ibbd_docker_run_root
 
+# 有些平台没有sudo命令，例如windows下使用mingw的环境
+sudo=
+if which sudo; then 
+    sudo=sudo
+fi
+
 username=$(whoami)
 if [ ! -d $image_download_path ]
 then 
     echo 'mkdir '$image_download_path
-    sudo mkdir -p $image_download_path
-    sudo -R $username:$username $image_download_path
+    $sudo mkdir -p $image_download_path
+    $sudo chown -R $username:$username $image_download_path
 fi
 
 usage() {
@@ -86,7 +92,7 @@ run_dev() {
     # 把本地的.ssh映射到镜像里，只读
     # 使用git的时候，需要在外部生成ssh key
     name=base-dev-tools
-    sudo docker run -ti --rm --name=ibbd-$name \
+    $sudo docker run -ti --rm --name=ibbd-$name \
         -v /var/www:/var/www \
         -v ~/.ssh:/root/.ssh:ro \
         -w /var/www \
@@ -98,7 +104,7 @@ run_dev() {
 # 启动nodejs本地开发环境
 run_node() {
     name=node-dev
-    sudo docker run -it --rm --name ibbd-$name \
+    $sudo docker run -it --rm --name ibbd-$name \
         -v $code_path:/var/www \
         -v $logs_path/node:/var/log/node \
         ibbd/$name \
@@ -110,7 +116,7 @@ run_node() {
 # @param string 进入容器的命令
 exec_cli() {
     echo $2
-    sudo docker exec -ti ibbd-$1 $2
+    $sudo docker exec -ti ibbd-$1 $2
 }
 
 # 加载一个镜像，如果镜像不存在，则从内网下载
@@ -153,9 +159,9 @@ load_image() {
         image_name=busybox
     fi
 
-    sudo docker stop $container_name
-    sudo docker rm $container_name 
-    sudo docker rmi $image_name
+    $sudo docker stop $container_name
+    $sudo docker rm $container_name 
+    $sudo docker rmi $image_name
 
     echo '操作完成。可能需要手动重启对应的环境：ibbd-docker-run '
 }
@@ -175,11 +181,11 @@ run_php() {
         then
             # 启动PHP环境
             # --no-recreate 加上这个的话，改变配置文件启动可能会出问题，link改变了
-            sudo docker-compose up -d --no-build
+            $sudo docker-compose up -d --no-build
         elif [ $action = stop ] 
         then
             # 停止PHP环境
-            sudo docker-compose stop
+            $sudo docker-compose stop
         elif [ $action = restart ] 
         then
             # 重启PHP环境
@@ -211,7 +217,7 @@ case $1 in
     'scrapy-bash'|'python2-bash'|'python3-bash'|'ruby-bash')
         name=$1
         name=${name%-*}
-        sudo docker run -ti --rm ibbd/$name /bin/bash 
+        $sudo docker run -ti --rm ibbd/$name /bin/bash 
         ;;
     'python2-cli'|'python3-cli'|'scrapy-cli'|'ruby-cli')
         name=$1
@@ -227,7 +233,7 @@ case $1 in
                 exec_cmd=$name
                 ;;
         esac
-        sudo docker run -ti --rm ibbd/$name $exec_cmd
+        $sudo docker run -ti --rm ibbd/$name $exec_cmd
         ;;
     "php-cli"|"mysql-cli"|"redis-cli"|"nginx-cli"|"mongo-cli")
         # 进入对应容器的命令行
