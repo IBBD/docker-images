@@ -21,7 +21,10 @@ fi
 
 save_file=$save_path/$1-$(date +%Y%m%d%H%M)".tar"
 echo $save_file
-sudo docker save -o $save_file ibbd/$1
+
+image_name=$1
+[ ! 'busybox' = $image_name ] && image_name="ibbd/$image_name"
+sudo docker save -o $save_file $image_name
 
 username=$(whoami)
 sudo chown $username:$username $save_file

@@ -8,6 +8,7 @@
 #        ibbd-docker-run node
 #        ibbd-docker-run php
 #        ibbd-docker-run php stop
+#        ibbd-docker-run load php-fpm
 # 
 # 注意：使用之前先将该文件复制到/usr/local/bin
 #
@@ -26,10 +27,21 @@ code_path=/var/www
 
 # 日志目录
 logs_path=/var/log
+
+# 镜像下载的保存地址
+image_download_path=/data/image-download
 #########################################################
 
 set -e
 cd $ibbd_docker_run_root
+
+username=$(whoami)
+if [ ! -d $image_download_path ]
+then 
+    echo 'mkdir '$image_download_path
+    sudo mkdir -p $image_download_path
+    sudo -R $username:$username $image_download_path
+fi
 
 usage() {
     name=$0
@@ -41,6 +53,7 @@ usage() {
     echo "       $name node"
     echo "       $name php"
     echo "       $name php stop"
+    echo "       $name load php-fpm"
     echo 
     echo '说明：'
     echo 
@@ -52,6 +65,7 @@ usage() {
     echo '- php-bash: 进入php的命令行。对比php-cli是进入php的交互模式'
     echo '- python2-cli: 进入python2的交互模式'
     echo '- scrapy-bash: 进入爬虫的命令行界面'
+    echo '- load {image name}: 加载从本地局域网内加载一个新的镜像, 以解决国内下载镜像过慢的问题'
     echo '注意：虽然dev容器可以允许在容器内部编辑代码，不过还有比较多的问题没解决。所以尽量不要在容器内部使用编辑工具'
 
     exit 1
@@ -97,6 +111,53 @@ run_node() {
 exec_cli() {
     echo $2
     sudo docker exec -ti ibbd-$1 $2
+}
+
+# 加载一个镜像，如果镜像不存在，则从内网下载
+# @todo 不同的内网，需要自己修改
+# @param string 镜像名，如php-fpm
+load_image() {
+    host=cyy.docker.images
+    ip=192.168.1.59
+    if ! grep $host /etc/hosts; then 
+        echo >> /etc/hosts 
+        echo '# 内部镜像下载（程序自动添加）' >> /etc/hosts
+        echo "$ip $host" >> /etc/hosts
+        echo "Add '$ip $host' to /etc/hosts"
+    fi
+    
+    # 获取最后一个文件的文件名
+    path=http://$host/$1
+    html=$(wget $path -O -)
+    filename=$(echo $html | grep -e $1"-[0-9]\+.tar" -o|tail -n 1)
+
+    # 判断该文件在下载目录是否存在
+    if ls $image_download_path/$filename; then 
+        echo "$image_download_path/$filename is existed!"
+        echo "如果需要，请手动加载镜像：docker load -i $image_download_path/$filename"
+        echo '加载新的镜像之前需要先删除该镜像下的容器，再删除重名镜像'
+        exit 1
+    else
+        path=$path'/'$filename
+        echo "download the file: $path"
+        wget $path -O $image_download_path/$filename
+        echo 'download finish!'
+    fi
+
+    # 加载新的镜像
+    container_name=ibbd-$1
+    image_name=ibbd/$1
+    if [ 'busybox' = $1 ]
+    then 
+        container_name=ibbd-data
+        image_name=busybox
+    fi
+
+    sudo docker stop $container_name
+    sudo docker rm $container_name 
+    sudo docker rmi $image_name
+
+    echo '操作完成。可能需要手动重启对应的环境：ibbd-docker-run '
 }
 
 # 启动PHP环境
@@ -209,6 +270,10 @@ case $1 in
             action=$2
         fi
         run_php $action
+        ;;
+
+    'load')
+        load "$2"
         ;;
     *)
         echo 'ERROR'
