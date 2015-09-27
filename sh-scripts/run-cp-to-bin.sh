@@ -7,6 +7,12 @@ if which sudo; then
     sudo=sudo
 fi
 
+bin_path=/usr/local/bin 
+if [ ! -d $bin_path ]
+then
+    bin_path=/bin
+fi
+
 $sudo rm /usr/local/bin/ibbd-docker-run
 $sudo cp ./ibbd-docker-run /usr/local/bin/ibbd-docker-run
 

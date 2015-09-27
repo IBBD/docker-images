@@ -2,6 +2,11 @@
 
 # 运行容器初始化程序
 
+sudo=
+if which sudo; then 
+    sudo=sudo
+fi
+
 # 判断ibbd-docker-run文件是否存在
 docker_bashrc_file="ibbd-docker-run"
 if [ ! -f $docker_bashrc_file ]
@@ -22,18 +27,18 @@ ibbd_docker_run_root_p=$(echo $ibbd_docker_run_root | sed 's/\//\\\//g')
 sed -i 's/^ibbd_docker_run_root=.*$/ibbd_docker_run_root='$ibbd_docker_run_root_p'/' ./$docker_bashrc_file
 
 # cp to /usr/local/bin/
-sudo cp ./ibbd-docker-run /usr/local/bin/
+$sudo cp ./ibbd-docker-run /usr/local/bin/
 
 ########################################
 ### 初始化相关目录 #####################
 ########################################
 
-[ ! -d /etc/nginx ] && sudo mkdir /etc/nginx
-[ ! -d /var/www ] && sudo mkdir /var/www
-[ ! -d /data ] && sudo mkdir /data
+[ ! -d /etc/nginx ] && $sudo mkdir /etc/nginx
+[ ! -d /var/www ] && $sudo mkdir /var/www
+[ ! -d /data ] && $sudo mkdir /data
 
 #user=$(whoami)
-#sudo -R $user:$user /var/www
+#$sudo -R $user:$user /var/www
 
 ########################################
 ### 初始化PHP环境的相关配置 ############
