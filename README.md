@@ -50,6 +50,9 @@ ibbd-docker-run php stop
 
 # 重启php环境 
 ibbd-docker-run php restart
+
+# 命令的帮助文档
+ibbd-docker-run 
 ```
 
 ## 基础开发环境
@@ -64,7 +67,9 @@ ibbd-docker-run php restart
 
 ### Node环境
 
-包含glup，sass，compass等，具体见：IBBD/dockerfile-node-dev 
+- 镜像：`ibbd/node-dev`
+
+包含nodejs, python2.7, ruby, glup，sass，compass等，具体见：IBBD/dockerfile-node-dev 
 
 - 从hub.docker.com pull镜像安装：（可能耗时比较久，需要耐心）
 
@@ -74,7 +79,9 @@ ibbd-docker-run php restart
 
 - `docker load`安装，需要先有打包好的镜像。
 
-### Ruby环境（单独的SASS和Compass环境）
+### Ruby环境
+
+- 镜像：`ibbd/ruby`
 
 - 从hub.docker.com pull镜像安装：（可能耗时比较久，需要耐心）
 
@@ -85,6 +92,15 @@ ibbd-docker-run php restart
 - `docker load`安装，需要先有打包好的镜像。
 
 ## PHP开发环境构建
+
+开发环境镜像：
+
+- busybox
+- ibbd/nginx 
+- ibbd/php-dev：继承于ibbd/php-fpm
+- ibbd/mariadb 
+- ibbd/redis 
+- ibbd/mongo
 
 ### STEP1：获取镜像
 
@@ -101,6 +117,27 @@ cd ./php-dev/
 ```sh 
 ibbd-docker-run php
 ```
+
+## php线上环境 
+
+线上环境暂时docker暂时只用于nginx和php-fpm，其他部分暂时不用
+
+- busybox 
+- ibbd/nginx 
+- ibbd/php-fpm：线上环境不含phpunit等测试工具
+
+## Python环境 
+
+Github：https://github.com/IBBD/dockerfile-python
+
+镜像结构：
+
+- Python2 
+    - scrapy：爬虫
+    - scientific-computing：科学计算
+- Python3
+
+
 
 ## 容器的基本操作
 

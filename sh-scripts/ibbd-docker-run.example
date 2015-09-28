@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # 为系统提供命令：ibbd-docker-run
+# 注意：只在本地开发环境使用
 #
 # @author cyy0523xc@gmail.com
 # Usage: ibbd-docker-run help
@@ -30,6 +31,10 @@ logs_path=/var/log
 
 # 镜像下载的保存地址
 image_download_path=/data/image-download
+
+# PHP镜像名: 本地使用开发镜像
+php_image_name=php-dev
+php_container_name=php-fpm
 #########################################################
 
 set -e
@@ -59,7 +64,7 @@ usage() {
     echo "       $name node"
     echo "       $name php"
     echo "       $name php stop"
-    echo "       $name load php-fpm"
+    echo "       $name load php-dev"
     echo 
     echo '说明：'
     echo 
@@ -96,7 +101,6 @@ run_dev() {
         -v /var/www:/var/www \
         -v ~/.ssh:/root/.ssh:ro \
         -w /var/www \
-        -u alex \
         ibbd/$name \
         $ibbd_command
 }
@@ -121,7 +125,7 @@ exec_cli() {
 
 # 加载一个镜像，如果镜像不存在，则从内网下载
 # @todo 不同的内网，需要自己修改
-# @param string 镜像名，如php-fpm
+# @param string 镜像名，如node-dev
 load_image() {
     host=cyy.docker.images
     ip=192.168.1.59
@@ -212,7 +216,7 @@ case $1 in
         run_node
         ;;
     "php-bash")
-        exec_cli php-fpm /bin/bash
+        exec_cli $php_container_name /bin/bash
         ;;
     'scrapy-bash'|'python2-bash'|'python3-bash'|'ruby-bash')
         name=$1
@@ -263,7 +267,7 @@ case $1 in
                 ;;
         esac
 
-        [ 'php' = $name ] && name=php-fpm
+        [ 'php' = $name ] && name=$php_container_name
         [ 'mysql' = $name ] && name=mariadb
         exec_cli $name "$exec_cmd"
         ;;
@@ -279,7 +283,7 @@ case $1 in
         ;;
 
     'load')
-        load "$2"
+        load_image "$2"
         ;;
     *)
         echo 'ERROR'

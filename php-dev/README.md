@@ -2,6 +2,8 @@
 
 这是本地开发使用
 
+注意：本地开发环境php镜像使用的是`php-dev`
+
 ## Docker Compose yml文件 
 
 提供了三个基本形式：

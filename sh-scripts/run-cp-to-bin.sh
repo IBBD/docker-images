@@ -16,3 +16,4 @@ fi
 $sudo rm /usr/local/bin/ibbd-docker-run
 $sudo cp ./ibbd-docker-run /usr/local/bin/ibbd-docker-run
 
+echo 'cp to '$bin_path' is ok'
