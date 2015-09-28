@@ -1,5 +1,5 @@
 #!/bin/bash
-# 导出镜像到/var/www/images
+# 导出镜像到/var/www/docker-images
 # 方便使用 docker load -i /path/to/filename.tar
 # 
 # 使用：
@@ -9,6 +9,8 @@
 if [ 1 -ne $# ]
 then 
     echo 'ERROR: the name of image is empty!'
+    echo 'Usage: ./docker-save.sh {docker image name}'
+    echo 'Usage: ./docker-save.sh php-fpm'
     exit 1
 fi
 
