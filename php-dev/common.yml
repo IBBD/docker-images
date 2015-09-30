@@ -12,8 +12,7 @@ nginx:
     ports:
         - 80:80
     volumes:
-        - /etc/nginx/nginx-conf-v2/products/sites-enabled:/etc/nginx/sites-enabled:ro
-        - /etc/nginx/nginx-conf-v2/products/nginx.conf:/etc/nginx/nginx.conf:ro
+        - /etc/nginx/nginx-conf/products/nginx.conf:/etc/nginx/nginx.conf:ro
 
 php-fpm:
     image: ibbd/php-dev

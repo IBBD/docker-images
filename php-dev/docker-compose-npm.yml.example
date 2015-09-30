@@ -11,6 +11,8 @@ nginx:
         - php-fpm
     volumes_from:
         - data
+    volumes:
+        - /etc/nginx/nginx-conf/products/local:/etc/nginx/sites-enabled:ro
 
 php-fpm:
     extends: 

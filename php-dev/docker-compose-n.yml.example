@@ -9,4 +9,7 @@ nginx:
         service: nginx
     volumes_from:
         - data
+    volumes:
+        - /etc/nginx/nginx-conf/products/local:/etc/nginx/sites-enabled:ro
+
 
