@@ -173,8 +173,8 @@ load_image() {
 # 启动PHP环境
 # @param string 动作类型：start（默认），stop，restart
 run_php() {
-    # 先确定./php-dev/docker-compose.yml文件是否存在
-    cd $ibbd_docker_run_root/php-dev/
+    # 先确定./php-fpm-dev/docker-compose.yml文件是否存在
+    cd $ibbd_docker_run_root/php-fpm-dev/
     dc_filename=docker-compose.yml
     if [ ! -f $dc_filename ]
     then

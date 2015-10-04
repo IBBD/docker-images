@@ -46,7 +46,7 @@ $sudo cp ./ibbd-docker-run /usr/local/bin/
 
 cd $ibbd_docker_run_root
 
-cd ./php-dev/config/
+cd ./php-fpm-dev/config/
 if [ ! -f php-fpm.conf ]
 then 
     # 将example文件复制成正式配置文件
@@ -57,9 +57,9 @@ then
         to_file=${from_file%.*}
         [ ! -f $to_file ] && cp $from_file $to_file
     done
-    echo "Finish: copy php-dev config files"
+    echo "Finish: copy php-fpm-dev config files"
 else
-    echo "The php-dev config files is existed!"
+    echo "The php-fpm-dev config files is existed!"
 fi
 
 # 执行成功
