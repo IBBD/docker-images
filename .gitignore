@@ -2,16 +2,16 @@
 /tmp/*
 *.lock
 
-/php-dev/config/php.ini
-/php-dev/config/php-fpm.conf
-/php-dev/config/redis.conf
-/php-dev/config/my.cnf
-/php-dev/config/mongod.conf
+/php-fpm-dev/config/php.ini
+/php-fpm-dev/config/php-fpm.conf
+/php-fpm-dev/config/redis.conf
+/php-fpm-dev/config/my.cnf
+/php-fpm-dev/config/mongod.conf
 
 /php-production/config/php.ini
 /php-production/config/php-fpm.conf
 
-/php-dev/docker-compose.yml
+/php-fpm-dev/docker-compose.yml
 /sh-scripts/ibbd-docker-run
 
 

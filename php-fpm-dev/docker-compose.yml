@@ -1,0 +1,32 @@
+data: 
+    extends: 
+        file: common.yml
+        service: data
+
+nginx:
+    extends: 
+        file: common.yml
+        service: nginx
+    links:
+        - php-fpm
+    volumes_from:
+        - data
+    volumes:
+        - /etc/nginx/nginx-conf/products/local:/etc/nginx/sites-enabled:ro
+
+php-fpm:
+    extends: 
+        file: common.yml
+        service: php-fpm
+    links:
+        - mysql
+    volumes_from:
+        - data
+
+mysql:
+    extends: 
+        file: common.yml
+        service: mysql
+    environment: 
+        - MYSQL_ROOT_PASSWORD=111111
+
