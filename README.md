@@ -97,7 +97,7 @@ ibbd-docker-run
 
 - busybox
 - ibbd/nginx 
-- ibbd/php-dev：继承于ibbd/php-fpm
+- ibbd/php-fpm-dev：继承于ibbd/php-fpm
 - ibbd/mariadb 
 - ibbd/redis 
 - ibbd/mongo
