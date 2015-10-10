@@ -6,7 +6,7 @@
 # @author cyy0523xc@gmail.com
 # Usage: ibbd-docker-run help
 #        ibbd-docker-run dev
-#        ibbd-docker-run node-dev
+#        ibbd-docker-run node-dev {8080}
 #        ibbd-docker-run php
 #        ibbd-docker-run php stop
 #        ibbd-docker-run load php-fpm
@@ -21,7 +21,7 @@
 # 注意：配置目录
 # 最后不要加/
 # docker-Compass编排容器的时候需要用到
-ibbd_docker_run_root=/home/code/ibbd/dockerfile/docker-images
+ibbd_docker_run_root=/var/www/github/docker-images
 
 # 代码目录
 code_path=/var/www
@@ -62,6 +62,7 @@ usage() {
     echo "usage: $name ruby-cli|ruby-bash"
     echo "   ie: $name dev"
     echo "       $name node-dev"
+    echo "       $name node-dev 8080"
     echo "       $name php"
     echo "       $name php stop"
     echo "       $name load php-dev"
@@ -71,7 +72,7 @@ usage() {
     echo '- cli后缀的是进入对应的命令行界面，通常是进入交互模式, 不带后缀的是进入一个环境'
     echo '- bash后缀：进入交互界面，例如php的命令行界面，就是/bin/bash'
     echo '- dev: 进入一个本地开发环境，包含vim，tmux，git等基本的开发工具'
-    echo '- node-dev: 进入本地的node开发环境，除了nodejs外，还包含ruby2.3，python2.7，Gulp，SASS，Compass等基本工具'
+    echo '- node-dev: 进入本地的node开发环境，除了nodejs外，还包含ruby2.3，python2.7，Gulp，SASS，Compass等基本工具. 可以指定监听的端口号, 默认不监听'
     echo '- php：php的运行环境。后面可以跟start，stop，restart等参数'
     echo '- php-bash: 进入php的命令行。对比php-cli是进入php的交互模式'
     echo '- python2-cli: 进入python2的交互模式'
@@ -106,13 +107,24 @@ run_dev() {
 }
 
 # 启动nodejs本地开发环境
+# @param number port,端口号
 run_node_dev() {
     name=node-dev
-    $sudo docker run -it --rm --name ibbd-$name \
-        -v $code_path:/var/www \
-        -v $logs_path/node:/var/log/node \
-        ibbd/$name \
-        /bin/bash
+    port=
+    if [ $1 -gt 0 ]; then 
+        port="-p $1:$1"
+    fi
+
+    # 如果容器不存在，则直接运行；否则则进入
+    if $sudo docker inspect ibbd-$name; then 
+        $sudo docker exec -ti ibbd-$name /bin/bash
+    else
+        $sudo docker run -it --rm --name ibbd-$name \
+            -v $code_path:/var/www \
+            -v $logs_path/node:/var/log/node \
+            $port ibbd/$name \
+            /bin/bash
+    fi
 }
 
 # 进入容器
@@ -213,7 +225,15 @@ case $1 in
         run_dev 
         ;;
     'node-dev')
-        run_node_dev
+        # 端口号，默认0（即不监听端口)
+        # node可以启动服务器
+        port=0
+        if [ 2 -eq $# ]; then 
+            if echo $2|grep -E '^[0-9]+$'; then 
+                port=$2
+            fi
+        fi
+        run_node_dev $port
         ;;
     "php-bash")
         exec_cli $php_container_name /bin/bash
