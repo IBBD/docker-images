@@ -6,7 +6,7 @@
 # @author cyy0523xc@gmail.com
 # Usage: ibbd-docker-run help
 #        ibbd-docker-run dev
-#        ibbd-docker-run node
+#        ibbd-docker-run node-dev
 #        ibbd-docker-run php
 #        ibbd-docker-run php stop
 #        ibbd-docker-run load php-fpm
@@ -57,11 +57,11 @@ fi
 usage() {
     name=$0
     name=${name##*/}
-    echo "usage: $name node|php|mysql-cli|php-cli|php-bash|nginx-cli|mongo-cli|redis-cli [start|stop|restart]"
+    echo "usage: $name node-dev|php|mysql-cli|php-cli|php-bash|nginx-cli|mongo-cli|redis-cli [start|stop|restart]"
     echo "usage: $name python2-cli|python2-bash|python3-cli|python3-bash|scrapy-bash|scrapy-cli"
     echo "usage: $name ruby-cli|ruby-bash"
     echo "   ie: $name dev"
-    echo "       $name node"
+    echo "       $name node-dev"
     echo "       $name php"
     echo "       $name php stop"
     echo "       $name load php-dev"
@@ -71,7 +71,7 @@ usage() {
     echo '- cli后缀的是进入对应的命令行界面，通常是进入交互模式, 不带后缀的是进入一个环境'
     echo '- bash后缀：进入交互界面，例如php的命令行界面，就是/bin/bash'
     echo '- dev: 进入一个本地开发环境，包含vim，tmux，git等基本的开发工具'
-    echo '- node: 进入本地的node开发环境，除了nodejs外，还包含ruby2.3，python2.7，Gulp，SASS，Compass等基本工具'
+    echo '- node-dev: 进入本地的node开发环境，除了nodejs外，还包含ruby2.3，python2.7，Gulp，SASS，Compass等基本工具'
     echo '- php：php的运行环境。后面可以跟start，stop，restart等参数'
     echo '- php-bash: 进入php的命令行。对比php-cli是进入php的交互模式'
     echo '- python2-cli: 进入python2的交互模式'
@@ -106,7 +106,7 @@ run_dev() {
 }
 
 # 启动nodejs本地开发环境
-run_node() {
+run_node_dev() {
     name=node-dev
     $sudo docker run -it --rm --name ibbd-$name \
         -v $code_path:/var/www \
@@ -212,8 +212,8 @@ case $1 in
     "dev")
         run_dev 
         ;;
-    'node')
-        run_node
+    'node-dev')
+        run_node_dev
         ;;
     "php-bash")
         exec_cli $php_container_name /bin/bash
