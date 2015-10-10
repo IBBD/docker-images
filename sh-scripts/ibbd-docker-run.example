@@ -116,14 +116,17 @@ run_node_dev() {
     fi
 
     # 如果容器不存在，则直接运行；否则则进入
-    if $sudo docker inspect ibbd-$name; then 
+    status=$($sudo docker inspect -f {{.State.Runnint}} ibbd-$name)
+    if [ "$status" = 'true' ]; then 
+        echo "exec ibbd-$name"
         $sudo docker exec -ti ibbd-$name /bin/bash
     else
+        echo "run ibbd-$name"
         $sudo docker run -it --rm --name ibbd-$name \
-            -v $code_path:/var/www \
-            -v $logs_path/node:/var/log/node \
-            $port ibbd/$name \
-            /bin/bash
+                -v $code_path:/var/www \
+                -v $logs_path/node:/var/log/node \
+                $port ibbd/$name \
+                /bin/bash
     fi
 }
 
