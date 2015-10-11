@@ -5,8 +5,9 @@
 #
 # @author cyy0523xc@gmail.com
 # Usage: ibbd-docker-run help
-#        ibbd-docker-run dev
+#        ibbd-docker-run node-dev
 #        ibbd-docker-run node-dev {8080}
+#        ibbd-docker-run node-dev-ruby 
 #        ibbd-docker-run php
 #        ibbd-docker-run php stop
 #        ibbd-docker-run load php-fpm
@@ -63,6 +64,7 @@ usage() {
     echo "   ie: $name dev"
     echo "       $name node-dev"
     echo "       $name node-dev 8080"
+    echo "       $name node-dev-ruby"
     echo "       $name php"
     echo "       $name php stop"
     echo "       $name load php-dev"
@@ -128,13 +130,17 @@ run_dev() {
         $ibbd_command
 }
 
-# 启动nodejs本地开发环境
+# 运行独立的容器环境
+# @param string 镜像名字
 # @param number port,端口号
-run_node_dev() {
-    name=node-dev
+run_independent_container() {
+    name=$1
     port=
-    if [ $1 -gt 0 ]; then 
-        port="-p $1:$1"
+    if [ $# -ne 2 ]; then 
+        echo 'ERROR: 参数个数错误'
+        return 1
+    elif [ $2 -gt 2 ]; then 
+        port="-p $2:$2"
     fi
 
     # 如果容器不存在，则直接运行；否则则进入
@@ -254,7 +260,7 @@ case $1 in
     "dev")
         run_dev 
         ;;
-    'node-dev')
+    'node-dev'|'node-dev-ruby')
         # 端口号，默认0（即不监听端口)
         # node可以启动服务器
         port=0
@@ -263,7 +269,7 @@ case $1 in
                 port=$2
             fi
         fi
-        run_node_dev $port
+        run_independent_container $1 $port
         ;;
     "php-bash")
         exec_cli $php_container_name /bin/bash
