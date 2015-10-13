@@ -11,6 +11,8 @@
 #        ibbd-docker-run php
 #        ibbd-docker-run php stop
 #        ibbd-docker-run load php-fpm
+#        ibbd-docker-run image {image-name}
+#        ibbd-docker-run container {container-name}
 # 
 # 注意：使用之前先将该文件复制到/usr/local/bin
 #
@@ -36,6 +38,10 @@ image_download_path=/data/image-download
 # PHP镜像名: 本地使用开发镜像
 php_image_name=php-dev
 php_container_name=php-fpm
+
+# 内部镜像下载host
+download_host=cyy.docker.images
+download_ip=192.168.1.59
 #########################################################
 
 set -e
@@ -68,6 +74,8 @@ usage() {
     echo "       $name php"
     echo "       $name php stop"
     echo "       $name load php-dev"
+    echo "       $name image {image-name}"
+    echo "       $name container {container-name}"
     echo 
     echo '说明：'
     echo 
@@ -80,6 +88,8 @@ usage() {
     echo '- python2-cli: 进入python2的交互模式'
     echo '- scrapy-bash: 进入爬虫的命令行界面'
     echo '- load {image name}: 加载从本地局域网内加载一个新的镜像, 以解决国内下载镜像过慢的问题'
+    echo '- image {image-name}: 按关键词搜索镜像'
+    echo '- container {container-name}: 按关键词搜索容器'
     echo '注意：虽然dev容器可以允许在容器内部编辑代码，不过还有比较多的问题没解决。所以尽量不要在容器内部使用编辑工具'
 
     exit 1
@@ -146,7 +156,8 @@ run_independent_container() {
     # 如果容器不存在，则直接运行；否则则进入
     if ! check_container_exists "ibbd-$name"; then
         echo "run ibbd-$name"
-        $sudo docker run -it --rm --name ibbd-$name \
+        #$sudo docker run -it --rm --name ibbd-$name \
+        $sudo docker run -it --name ibbd-$name \
                 -v $code_path:/var/www \
                 -v $logs_path/node:/var/log/node \
                 $port ibbd/$name \
@@ -175,17 +186,15 @@ exec_cli() {
 # @todo 不同的内网，需要自己修改
 # @param string 镜像名，如node-dev
 load_image() {
-    host=cyy.docker.images
-    ip=192.168.1.59
-    if ! grep $host /etc/hosts; then 
+    if ! grep $download_host /etc/hosts; then 
         echo >> /etc/hosts 
         echo '# 内部镜像下载（程序自动添加）' >> /etc/hosts
-        echo "$ip $host" >> /etc/hosts
-        echo "Add '$ip $host' to /etc/hosts"
+        echo "$download_ip $download_host" >> /etc/hosts
+        echo "Add '$download_ip $download_host' to /etc/hosts"
     fi
     
     # 获取最后一个文件的文件名
-    path=http://$host/$1
+    path=http://$download_host/$1
     html=$(wget $path -O -)
     filename=$(echo $html | grep -e $1"-[0-9]\+.tar" -o|tail -n 1)
 
@@ -340,6 +349,12 @@ case $1 in
 
     'load')
         load_image "$2"
+        ;;
+    'image')
+        $sudo docker images | grep -E "$2"'\s+'
+        ;;
+    'container')
+        $sudo docker ps -a | grep -E "$2"'$'
         ;;
     *)
         echo 'ERROR'
