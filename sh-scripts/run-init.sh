@@ -1,6 +1,22 @@
 #!/bin/bash
+# 
+# 容器环境初始化程序
+# 
+# @author alex
+# 
+# 
 
-# 运行容器初始化程序
+########################################
+### 配置变量begin ######################
+########################################
+
+# nginx配置文件路径
+nginx_conf=/etc/nginx/nginx-conf
+
+########################################
+### 配置变量end ########################
+########################################
+
 
 sudo=
 if which sudo; then 
@@ -61,6 +77,21 @@ then
 else
     echo "The php-fpm-dev config files is existed!"
 fi
+
+########################################
+### 初始化Nginx环境的相关配置 ##########
+########################################
+
+if [ ! -f $nginx_conf/products/nginx.conf ]; then 
+    if [ -f $nginx_conf/products/nginx.conf.example ]; then 
+        sudo cp $nginx_conf/products/nginx.conf.example $nginx_conf/products/nginx.conf 
+        echo 'cp nginx.conf.example to nginx.conf.'
+    else 
+        echo 'ERROR: nginx配置目录不对: '$nginx_conf 
+        exit 1
+    fi 
+fi
+
 
 # 执行成功
 echo 'SUCCESS!'
