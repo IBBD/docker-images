@@ -1,7 +1,8 @@
 #!/bin/bash
 # 
-# 容器环境初始化程序
+# docker容器环境初始化程序
 # 
+# @example ibbd-docker-run 
 # @author alex
 # 
 # 
