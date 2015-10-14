@@ -5,5 +5,5 @@ if ! ./init.sh; then
     exit 1
 fi
 
-sudo docker-compose up 
+sudo docker-compose up -d
 
