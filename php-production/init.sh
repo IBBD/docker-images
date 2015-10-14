@@ -10,7 +10,7 @@ cd config
 files=$(ls)
 for file_example in $files; do 
     # 文件后缀
-    lastname=${file_example*.}
+    lastname=${file_example##*.}
     if [ "$lastname" = example ]; then 
         dest_name=${file_example%.*}
         if [ ! -f "$dest_name" ]; then 
