@@ -4,9 +4,14 @@
 #
 
 docker_pull_one() {
-    sudo docker pull ibbd/$1
+    if [ "$1" = busybox ]; 
+        image_name=busybox 
+    else 
+        image_name="ibbd/$1"
+    fi
+    sudo docker pull "$image_name"
     echo ""
-    echo "===> docker pull ibbd/$1 done!"
+    echo "===> docker pull $image_name done!"
 }
 
 images_list="busybox nginx php-fpm"
