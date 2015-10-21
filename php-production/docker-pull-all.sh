@@ -22,3 +22,6 @@ do
 done
 
 echo '===> All done!'
+echo '下面输出已经下载了的镜像：'
+sudo docker images
+
