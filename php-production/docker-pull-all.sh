@@ -9,7 +9,7 @@ docker_pull_one() {
     echo "===> docker pull ibbd/$1 done!"
 }
 
-images_list="nginx php-fpm"
+images_list="busybox nginx php-fpm"
 
 for i in $images_list
 do 
