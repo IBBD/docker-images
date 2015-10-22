@@ -4,7 +4,7 @@
 #
 
 docker_pull_one() {
-    if [ "$1" = busybox ]; 
+    if [ "$1" = busybox ]; then 
         image_name=busybox 
     else 
         image_name="ibbd/$1"
