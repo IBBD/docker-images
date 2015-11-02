@@ -1,0 +1,153 @@
+#!/bin/bash 
+# 
+# IBBD Docker专属命令，主要是一些日常经常使用的命令组合
+# 使用在服务器端
+# 
+# 第一次执行该文件的时候，会将该文件复制到/usr/local/bin/目录，并设置相应的目录
+# 
+# @author alex 
+# @date   2015-10-13
+# 
+
+##### 设置php docker-compose 配置文件目录
+# 第一次执行复制到/usr/local/bin之后，会修改该变量
+docker_compose_php_path=
+
+# 帮助
+# @param int 退出代码，默认为0（成功），非0为失败
+usage() {
+    echo "$0 是一个IBBD Docker相关的服务器端指令集合, 在线上使用"
+    echo "Usage: "
+    echo "  $0 php [start|stop|restart] : phpfpm服务器启动关闭，默认为启动. 注意：这里nginx也会重启"
+    echo "  $0 php exec {command}       : 使用php来执行某个命令，例如用在crontab" 
+    echo "  $0 php bash                 : 进入php的命令行环境，可以执行composer等相关"
+    echo "  $0 php check                : 检查php环境服务是否正常运行"
+    echo "  $0 php monitor              : 检查php环境服务是否正常运行, 如果不正常则重新启动, 留给监控程序调用"
+    echo "  $0 nginx reload             : nginx配置文件的重新加载"
+    echo "  $0 nginx bash               : 进入nginx的命令环境"
+    echo "  $0 "
+
+    if [ $# -lt 1 ]; then 
+        code=0
+    else
+        code=$1
+    fi
+    exit $code
+}
+
+error() {
+    echo "ERROR: $*"
+    echo 
+    usage 1
+}
+
+if [ $# -lt 1 -o "$1" = help -o "$1" = h ]; then 
+    usage 
+fi
+
+# 有些平台没有sudo命令，例如windows下使用mingw的环境
+sudo=
+if which sudo; then 
+    sudo=sudo
+fi
+
+# 判断容器是否存在
+# @param string 容器名
+check_container_exists() {
+    if $sudo docker ps -a | grep -E '\s'"$1"'$' -q
+    then 
+        return 0
+    fi
+    return 1
+}
+
+# 判断容器是否正在运行 
+# @param string 容器名
+check_container_running() {
+    if check_container_exists "$1"; then 
+        status=$($sudo docker inspect -f {{.State.Runnint}} "$1")
+        if [ "$status" != 'true' ]; then 
+            return 0
+        fi
+    fi
+    return 1
+}
+
+# 判断php的执行环境是否正常
+# 主要检查phpfpm和nginx容器是否正在运行
+check_php_env_running() {
+    if check_container_running 'ibbd-nginx'; then 
+        if check_container_running 'ibbd-php-fpm'; then 
+            return 0
+        else 
+            echo 'ERROR: ibbd-php-fpm is not running!'
+        fi 
+    else 
+        echo 'ERROR: ibbd-nginx is not running!'
+    fi
+    return 1
+}
+
+# 处理命令
+case "$1" in
+    nginx)
+        if [ $# -ne 2 ]; then 
+            error '参数异常！'
+        fi
+
+        if [ "$2" = reload ]; then 
+            $sudo docker exec -ti ibbd-nginx nginx -s reload
+        elif [ "$2" = bash ]; then 
+            $suo docker exec -ti ibbd-nginx /bin/bash 
+        else 
+            error "参数异常"
+        fi
+        ;;
+    php)
+        if [ $# -eq 1 ]; then 
+            action=start
+        else 
+            action=$2
+        fi
+
+        # 处理不同的action
+        container=ibbd-php-fpm
+        cd $docker_compose_php_path 
+        case "$action" in 
+            start)
+                bash start.sh
+                ;;
+            stop)
+                bash stop.sh
+                ;;
+            restart)
+                bash restart.sh
+                ;;
+            bash)
+                $sudo docker exec -ti $container /bin/bash 
+                ;;
+            exec)
+                $sudo docker exec -ti $container $3
+                ;;
+            check)
+                if check_php_env_running; then 
+                else 
+                fi 
+                ;;
+            monitor)
+                if ! check_php_env_running; then 
+                    bash start.sh 
+                fi 
+                ;;
+            *)
+                error "$action 该命令不存在"
+                ;;
+        esac 
+        ;;
+    *)
+        error '参数异常！'
+        ;;
+esac
+
+
+
