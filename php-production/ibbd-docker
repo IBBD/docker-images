@@ -131,7 +131,9 @@ case "$1" in
                 ;;
             check)
                 if check_php_env_running; then 
+                    echo "$container is running."
                 else 
+                    echo "$container is down!"
                 fi 
                 ;;
             monitor)
