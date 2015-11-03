@@ -41,7 +41,7 @@ php_container_name=php-fpm
 
 # 内部镜像下载host
 download_host=cyy.docker.images
-download_ip=192.168.1.59
+download_ip=192.168.1.234
 #########################################################
 
 set -e
@@ -67,12 +67,13 @@ usage() {
     echo "usage: $name node-dev|php|mysql-cli|php-cli|php-bash|nginx-cli|mongo-cli|redis-cli [start|stop|restart]"
     echo "usage: $name python2-cli|python2-bash|python3-cli|python3-bash|scrapy-bash|scrapy-cli"
     echo "usage: $name ruby-cli|ruby-bash"
-    echo "   ie: $name dev"
+    echo "   ie: $name node"
     echo "       $name node-dev"
     echo "       $name node-dev 8080"
     echo "       $name node-dev-ruby"
     echo "       $name php"
     echo "       $name php stop"
+    echo "       $name nginx reload"
     echo "       $name load php-dev"
     echo "       $name image {image-name}"
     echo "       $name container {container-name}"
@@ -82,9 +83,11 @@ usage() {
     echo '- cli后缀的是进入对应的命令行界面，通常是进入交互模式, 不带后缀的是进入一个环境'
     echo '- bash后缀：进入交互界面，例如php的命令行界面，就是/bin/bash'
     echo '- dev: 进入一个本地开发环境，包含vim，tmux，git等基本的开发工具'
+    echo '- node: 进入node的部署环境，只包含基本的部署工具，如gulp，webpack等'
     echo '- node-dev: 进入本地的node开发环境，除了nodejs外，还包含ruby2.3，python2.7，Gulp，SASS，Compass等基本工具. 可以指定监听的端口号, 默认不监听'
     echo '- php：php的运行环境。后面可以跟start，stop，restart等参数'
     echo '- php-bash: 进入php的命令行。对比php-cli是进入php的交互模式'
+    echo '- nginx reload: 重新加载nginx配置'
     echo '- python2-cli: 进入python2的交互模式'
     echo '- scrapy-bash: 进入爬虫的命令行界面'
     echo '- load {image name}: 加载从本地局域网内加载一个新的镜像, 以解决国内下载镜像过慢的问题'
@@ -230,11 +233,15 @@ load_image() {
 # 启动PHP环境
 # @param string 动作类型：start（默认），stop，restart
 run_php() {
-    # 先确定./php-fpm-dev/docker-compose.yml文件是否存在
     cd $ibbd_docker_run_root/php-fpm-dev/
+    if [ ! -f config/php.ini ]; then 
+        echo '测试环境的php环境尚未配置ok'
+        exit 1 
+    fi
+
+    # 先确定./php-fpm-dev/docker-compose.yml文件是否存在
     dc_filename=docker-compose.yml
-    if [ ! -f $dc_filename ]
-    then
+    if [ ! -f $dc_filename ]; then
         echo "ERROR: $dc_filename is not existed!"
         exit 1
     else
@@ -346,7 +353,15 @@ case $1 in
         fi
         run_php $action
         ;;
-
+    nginx)
+        if [ "$2" = reload ]; then 
+            $sudo docker exec -ti ibbd-nginx nginx -s reload
+        else 
+            echo "ERROR: nginx不支持该命令"
+            echo
+            usage 
+        fi 
+        ;;
     'load')
         load_image "$2"
         ;;
