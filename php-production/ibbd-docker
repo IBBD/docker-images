@@ -18,7 +18,7 @@ docker_compose_php_path=
 usage() {
     echo "$0 是一个IBBD Docker相关的服务器端指令集合, 在线上使用"
     echo "Usage: "
-    echo "  $0 php [start|stop|restart] : phpfpm服务器启动关闭，默认为启动. 注意：这里nginx也会重启"
+    echo "  $0 php [start|stop|restart] : phpfpm服务器启动关闭，默认为启动. 注意：这里nginx也会重启（这个的命令只能使用root账号才能执行, 请联系管理员）"
     echo "  $0 php exec {command}       : 使用php来执行某个命令，例如用在crontab" 
     echo "  $0 php bash                 : 进入php的命令行环境，可以执行composer等相关"
     echo "  $0 php check                : 检查php环境服务是否正常运行"
@@ -88,6 +88,25 @@ check_php_env_running() {
     return 1
 }
 
+# 判断是否是root用户
+check_root() {
+    if [ "$HOME" = '/root' ]; then 
+        return 0
+    fi
+
+    return 1
+}
+
+# 命令必须由root用户执行
+# @param string 命令
+command_need_root() {
+    if ! check_root; then 
+        echo "ERROR: $1 命令必须是root用户才能执行，请联系管理员"
+        exit 1
+    fi
+    return 0
+}
+
 # 处理命令
 case "$1" in
     nginx)
@@ -115,12 +134,15 @@ case "$1" in
         cd $docker_compose_php_path 
         case "$action" in 
             start)
+                command_need_root "$action"
                 bash start.sh
                 ;;
             stop)
+                command_need_root "$action"
                 bash stop.sh
                 ;;
             restart)
+                command_need_root "$action"
                 bash restart.sh
                 ;;
             bash)
