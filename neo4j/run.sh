@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker run \
+sudo docker run \
     --detach \
     --publish=7474:7474 \
     --volume=/data/neo4j:/data \
