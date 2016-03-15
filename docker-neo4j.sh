@@ -32,6 +32,7 @@ case $1 in
             --detach \
             --publish=$port:$port \
             --volume=/data/neo4j/data:/data \
+            --env=NEO4J_CACHE_MEMORY=1G \
             --name="$name" \
             neo4j
         ;;
