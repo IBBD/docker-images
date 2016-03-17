@@ -18,6 +18,11 @@ name=ibbd-neo4j
 # 对外端口
 port=7474
 
+# 用户名密码
+# 注意修改密码
+user=neo4j
+password=test
+
 # 数据目录
 data=/data/neo4j/data
 if [ ! -d "$data" ]; then
@@ -33,6 +38,7 @@ case $1 in
             --publish=$port:$port \
             --volume=/data/neo4j/data:/data \
             --env=NEO4J_CACHE_MEMORY=1G \
+            --env=NEO4J_AUTH="$user"/"$password" \
             --name="$name" \
             neo4j
         ;;
