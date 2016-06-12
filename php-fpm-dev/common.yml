@@ -39,13 +39,8 @@ mysql:
 redis:
     image: ibbd/redis
     container_name: ibbd-redis
-    command: redis-server /etc/redis/redis.conf
     ports:
         - 6379:6379
-    volumes:
-        - /data/redis:/data
-        - /var/log/redis:/var/log/redis
-        - ./config/redis.conf:/etc/redis/redis.conf:ro 
 
 mongo:
     image: ibbd/mongo
