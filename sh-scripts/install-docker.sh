@@ -35,6 +35,7 @@ install_docker_compose() {
     sudo docker-compose -v
 }
 
+apt-get install curl  -y
 install_docker
 install_docker_compose
 
