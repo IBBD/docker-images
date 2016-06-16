@@ -17,10 +17,10 @@ listen = [::]:9000
 
 pm = dynamic
 ;pm = static
-pm.max_children = 2
+pm.max_children = 3
 pm.start_servers = 1
-pm.min_spare_servers = 10
-pm.max_spare_servers = 30
+pm.min_spare_servers = 1
+pm.max_spare_servers = 2
 
 clear_env = no
 
