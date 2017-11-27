@@ -8,6 +8,7 @@ nginx:
         file: common.yml
         service: nginx
     links:
+        - php7-fpm
         - php-fpm
     volumes_from:
         - data
@@ -21,4 +22,9 @@ php-fpm:
     volumes_from:
         - data
 
-
+php7-fpm:
+    extends: 
+        file: common.yml
+        service: php7-fpm
+    volumes_from:
+        - data
