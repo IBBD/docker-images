@@ -16,7 +16,7 @@ nginx:
         - /etc/nginx/nginx-conf/products/release:/etc/nginx/sites-enabled:ro
 
 php-fpm:
-    image: ibbd/php-fpm:ext
+    image: ibbd/php-fpm:5.6.18
     container_name: ibbd-php-fpm
     command: php-fpm -c /usr/local/etc/php/php.ini -y /usr/local/etc/php-fpm.conf
     ports:
